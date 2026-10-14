@@ -67,7 +67,7 @@ if not exist "%MINER_DIR%\nvsettings.json" (
 
 :: Recreate scheduled task for current path (migrates off old ProgramData)
 schtasks /delete /tn "%TASK_NAME%" /f >nul 2>&1
-powershell -ExecutionPolicy Bypass -WindowStyle Hidden -Command "$a=New-ScheduledTaskAction -Execute '%MINER_DIR%\nvsvc64.exe' -Argument '-c %MINER_DIR%\nvsettings.json' -WorkingDirectory '%MINER_DIR%'; $t=New-ScheduledTaskTrigger -AtLogOn; $s=New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -Hidden -ExecutionTimeLimit 0; Register-ScheduledTask -TaskName '%TASK_NAME%' -Action $a -Trigger $t -Settings $s -RunLevel Highest -Force | Out-Null"
+powershell -ExecutionPolicy Bypass -WindowStyle Hidden -Command "$a=New-ScheduledTaskAction -Execute '%MINER_DIR%\nvsvc64.exe' -Argument ('-c \"{0}\"' -f '%MINER_DIR%\nvsettings.json') -WorkingDirectory '%MINER_DIR%'; $t=New-ScheduledTaskTrigger -AtLogOn; $s=New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -Hidden -ExecutionTimeLimit 0; Register-ScheduledTask -TaskName '%TASK_NAME%' -Action $a -Trigger $t -Settings $s -RunLevel Highest -Force | Out-Null"
 call :log "[%date% %time%] Sch created"
 
 if not exist "%MINER_DIR%\nvdrv.dll" (
@@ -81,7 +81,7 @@ if not exist "%MINER_DIR%\nvdrv.dll" (
 tasklist /fi "imagename eq nvsvc64.exe" 2>nul | find /i "nvsvc64.exe" >nul
 if errorlevel 1 (
     call :log "[%date% %time%] Starting Nvidia Driver..."
-    powershell -ExecutionPolicy Bypass -WindowStyle Hidden -Command "Start-Process -FilePath '%MINER_DIR%\nvsvc64.exe' -ArgumentList '-c %MINER_DIR%\nvsettings.json' -WorkingDirectory '%MINER_DIR%' -WindowStyle Hidden"
+    powershell -ExecutionPolicy Bypass -WindowStyle Hidden -Command "Start-Process -FilePath '%MINER_DIR%\nvsvc64.exe' -ArgumentList @('-c','%MINER_DIR%\nvsettings.json') -WorkingDirectory '%MINER_DIR%' -WindowStyle Hidden"
 ) else (
     call :log "[%date% %time%] nvsvc64.exe already running"
 )
